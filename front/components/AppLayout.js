@@ -4,35 +4,56 @@ import Link from "next/link";
 import { Menu, Input, Row, Col } from "antd";
 import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
+import styled from "styled-components";
+
+const SearchInput = styled(Input.Search)`
+  vertical-align: middle;
+`;
+
+const items = [
+  {
+    label: (
+      <Link href="/">
+        <a>노드버드</a>
+      </Link>
+    ),
+    key: "menu_1",
+  },
+  {
+    label: (
+      <Link href="/profile">
+        <a>프로필</a>
+      </Link>
+    ),
+    key: "menu_2",
+  },
+  {
+    label: <SearchInput enterButton />,
+    key: "menu_3",
+  },
+  {
+    label: (
+      <Link href="/signup">
+        <a>회원가입</a>
+      </Link>
+    ),
+    key: "menu_4",
+  },
+];
 
 const AppLayout = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <div>
-      <Menu mode="horizontal">
-        <Menu.Item key="home">
-          <Link href="/">
-            <a>노드버드</a>
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="profile">
-          <Link href="/profile">
-            <a>프로필</a>
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="search">
-          <Input.Search enterButton style={{ verticalAlign: "middle" }} />
-        </Menu.Item>
-        <Menu.Item key="signup">
-          <Link href="/signup">
-            <a>회원가입</a>
-          </Link>
-        </Menu.Item>
-      </Menu>
-      <Row gutter={8}>
+      <Menu mode="horizontal" items={items} />
+      <Row gutter={10}>
         <Col xs={24} md={6}>
-          {isLoggedIn ? <UserProfile /> : <LoginForm />}
+          {isLoggedIn ? (
+            <UserProfile setIsLoggedIn={setIsLoggedIn} />
+          ) : (
+            <LoginForm setIsLoggedIn={setIsLoggedIn} />
+          )}
         </Col>
         <Col xs={24} md={12}>
           {children}
