@@ -25,7 +25,9 @@ const UserProfile = () => {
       ]}
     >
       <Card.Meta avatar={<Avatar>SUN</Avatar>} title="sunmin" />
-      <Button onClick={onLogout}>로그아웃</Button>
+      <Button style={{ marginTop: 20 }} onClick={onLogout}>
+        로그아웃
+      </Button>
     </Card>
   );
 };
