@@ -2,10 +2,11 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { User, Post } = require("../models");
+const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const router = express.Router();
 
 //POST /user/login
-router.post("/login", (req, res, next) => {
+router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (serverErr, user, clientErr) => {
     if (serverErr) {
       console.error(serverErr);
@@ -37,7 +38,7 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/logout", (req, res) => {
+router.post("/logout", isLoggedIn, (req, res) => {
   req.logout(() => {
     res.redirect("/");
   });
@@ -46,7 +47,7 @@ router.post("/logout", (req, res) => {
 });
 
 //POST /user
-router.post("/", async (req, res, next) => {
+router.post("/", isNotLoggedIn, async (req, res, next) => {
   try {
     //이메일 중복 체크
     const exUser = await User.findOne({
