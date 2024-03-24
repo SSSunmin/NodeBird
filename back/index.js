@@ -4,9 +4,12 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
+const morgan = require("morgan");
 
 const userRouter = require("./routes/user");
+const postsRouter = require("./routes/posts");
 const postRouter = require("./routes/post");
+
 const db = require("./models");
 const passportConfig = require("./passport");
 
@@ -22,6 +25,7 @@ db.sequelize
 
 passportConfig();
 
+app.use(morgan("dev"));
 app.use(
   cors({
     origin: "http://localhost:3060",
@@ -49,28 +53,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/", (req, res) => {
-  res.send("hello express");
-});
-
-app.get("/posts", (req, res) => {
-  res.json([
-    {
-      id: 1,
-      contene: "hello",
-    },
-    {
-      id: 2,
-      contene: "post",
-    },
-    {
-      id: 2,
-      contene: "api",
-    },
-  ]);
-});
-
 app.use("/user", userRouter);
+app.use("/posts", postsRouter);
 app.use("/post", postRouter);
 
 app.listen(3065, () => {
