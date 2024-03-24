@@ -5,6 +5,38 @@ const { User, Post } = require("../models");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const router = express.Router();
 
+// GET /user
+router.get("/", async (req, res, next) => {
+  try {
+    if (req.user) {
+      const user = await User.findOne({
+        where: {
+          id: req.user.id,
+        },
+        attributes: { exclude: ["password"] },
+        include: [
+          {
+            model: Post,
+            attributes: ["id"], // 숫자만 세면 되서 아이디만 불러옴, 전체 데이터를 다 받아오기에는 낭비
+          },
+          {
+            model: User,
+            as: "Followings",
+            attributes: ["id"],
+          },
+          { model: User, as: "Followers", attributes: ["id"] },
+        ],
+      });
+      res.status(200).json(user);
+    } else {
+      res.status(200).json(null);
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 //POST /user/login
 router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (serverErr, user, clientErr) => {
